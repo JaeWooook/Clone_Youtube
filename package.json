@@ -1,0 +1,22 @@
+{
+  "name": "clone_youtube",
+  "version": "1.0.0",
+  "description": "Cloning Youtube with Vanilla and NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/br12345678/Clone_Youtube.git"
+  },
+  "author": "Jaewook Jeong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/br12345678/Clone_Youtube/issues"
+  },
+  "homepage": "https://github.com/br12345678/Clone_Youtube#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
