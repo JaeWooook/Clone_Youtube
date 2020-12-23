@@ -1,4 +1,4 @@
-import "core-js";
+// import "core-js";
 // const express = require("express");
 import express from "express";
 const app = express();
@@ -6,7 +6,7 @@ const app = express();
 const PORT = 4000;
 //This change call back function
 const handleListening = () => {
-  console.log(`Listening on: http"//localhost:${PORT}`);
+  console.log(`Listening on: http://localhost:${PORT}`);
 };
 const handleHome = (req, res) => {
   res.send("Hello from Home");
