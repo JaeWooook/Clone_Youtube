@@ -1,7 +1,12 @@
 import { videos } from "../db";
 
+const fakeUser = {
+  username: "JaeWook",
+  loggedIn: false,
+};
+
 export const trending = (req, res) => {
-  res.render("home", { pageTitle: "Home", videos });
+  res.render("home", { pageTitle: "Home", fakeUser });
 };
 
 export const search = (req, res) => {
@@ -17,11 +22,9 @@ export const upload = (req, res) =>
 // export const videos = (req, res) =>
 //   res.render("Videos", { pageTitle: "Videos" });
 
-export const see = (req, res) =>
-  res.render("watch", { pageTitle: "Video Detail" });
+export const see = (req, res) => res.render("watch", { pageTitle: "Watch" });
 
-export const edit = (req, res) =>
-  res.render("edit", { pageTitle: "Edit Video" });
+export const edit = (req, res) => res.render("edit", { pageTitle: "Edit" });
 
 export const deleteVideo = (req, res) =>
   res.render("DeleteVideo", { pageTitle: "Delete Video" });
