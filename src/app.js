@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-
+app.use(express.urlencoded({ extended: true }));
 app.use(localsMiddleware);
 
 app.use("/", globalRouter);
