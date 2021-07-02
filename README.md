@@ -1,4 +1,4 @@
-# WeTube
+# YourTube
 
 Cloning Youtube with Vanilla and NodeJS
 
