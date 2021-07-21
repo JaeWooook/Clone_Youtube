@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 mongoose.connect("mongodb://127.0.0.1:27017/YourTube", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false, //이런식으로 false로 설정을 추가해주면된다.
+  useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 const db = mongoose.connection;
