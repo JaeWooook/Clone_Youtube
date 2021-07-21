@@ -7,7 +7,7 @@ import { localsMiddleware } from "./middlewares";
 // import routes from "./routes";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
-import globalRouter from "./routers/globalRouter";
+import rootRouter from "./routers/rootRouter";
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(localsMiddleware);
 
-app.use("/", globalRouter);
+app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 
