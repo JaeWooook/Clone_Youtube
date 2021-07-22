@@ -7,6 +7,7 @@ import session from "express-session";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import rootRouter from "./routers/rootRouter";
+import { localsMiddleware } from "./middlewares";
 
 const app = express();
 
@@ -18,11 +19,13 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "Hello", //나중에는 정말 secret으로 아무도 모르는 문자열을 넣을 것이다.
+    secret: "Hello",
     resave: true,
     saveUninitialized: true,
   })
 );
+
+app.use(localsMiddleware);
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

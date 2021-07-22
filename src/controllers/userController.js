@@ -56,6 +56,9 @@ export const postLogin = async (req, res) => {
       errorMessage: "Wrong password",
     });
   }
+  req.session.loggedIn = true; //각 유저마다 req.session에 object를 가지고 있다. 서버에서 미들웨어를 통해서 생성해주었다.
+  req.session.user = user; //위에서 찾은 user를 추가해준다.
+
   return res.redirect("/");
 };
 // res.render("Login", { pageTitle: "Login" });
