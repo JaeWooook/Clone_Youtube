@@ -117,4 +117,4 @@ dist
 
 /node_modules/
 package-lock.json
-.babelrc
+babel.config.json
