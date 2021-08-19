@@ -135,15 +135,52 @@ export const finishGithubLogin = async (req, res) => {
     return res.redirect("/login");
   }
 };
-// res.render("Login", { pageTitle: "Login" });
+
 export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
-// res.render("Logout", { pageTitle: "Logout" });
-export const edit = (req, res) =>
-  res.render("Edit User", { pageTitle: "Edit Users" });
-export const remove = (req, res) =>
-  res.render("Remove User", { pageTitle: "Remove User" });
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", {
+    pageTitle: "Edit Profile",
+    user: req.session.user,
+  });
+};
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, email: sessionEmail, username: sessionUsername },
+    },
+    body: { name, email, username, location },
+  } = req;
+
+  if (sessionEmail !== username || sessionUsername !== email) {
+    const exists = await User.exists({ $or: [{ username }, { email }] });
+    if (exists) {
+      return res.status(400).render("edit-profile", {
+        errorMessage: "This username/email is already taken",
+      });
+    }
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        _id,
+        {
+          name: name,
+          email: email,
+          username: username,
+          location: location,
+        },
+        { new: true }
+      );
+      req.session.user = updatedUser;
+      return res.redirect("/users/edit");
+    } catch (error) {
+      return res.status(400).render("edit-profile", {
+        errorMessage: error._message,
+      });
+    }
+  }
+};
+
 export const see = (req, res) =>
   res.render("See User", { pageTitle: "See User" });
