@@ -41,7 +41,8 @@ export const getLogin = (req, res) => {
 };
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username: username });
+  console.log(username, password);
+  const user = await User.findOne({ username: username, socialOnly: false });
   const pageTitle = "Login";
   if (!user) {
     return res.status(400).render("login", {
@@ -115,13 +116,10 @@ export const finishGithubLogin = async (req, res) => {
     if (!emailObj.email) {
       return res.redirect("/login");
     }
-    const existingUser = await User.findOne({ email: emailObj.email });
-    if (existingUser) {
-      req.session.loggedIn = true;
-      req.session.user = existingUser;
-      return res.redirect("/");
-    } else {
-      const user = await User.create({
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        avatarUrl: userData.avatar_url,
         name: userData.name,
         username: userData.login,
         email: emailObj.email,
@@ -129,16 +127,19 @@ export const finishGithubLogin = async (req, res) => {
         socailOnly: true,
         location: userData.location,
       });
-      req.session.loggedIn = true;
-      req.session.user = userData;
-      return res.redirect("/");
     }
+    req.session.loggedIn = true;
+    req.session.user = userData;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
 };
 // res.render("Login", { pageTitle: "Login" });
-export const logout = (req, res) => res.end("Logout");
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect("/");
+};
 // res.render("Logout", { pageTitle: "Logout" });
 export const edit = (req, res) =>
   res.render("Edit User", { pageTitle: "Edit Users" });
