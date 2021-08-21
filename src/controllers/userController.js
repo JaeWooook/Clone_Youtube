@@ -41,7 +41,7 @@ export const getLogin = (req, res) => {
 };
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password);
+
   const user = await User.findOne({ username: username, socialOnly: false });
   const pageTitle = "Login";
   if (!user) {
@@ -50,7 +50,7 @@ export const postLogin = async (req, res) => {
       errorMessage: "An account with this username does not exists.",
     });
   }
-  console.log(user.password);
+
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) {
     return res.status(400).render("login", {
@@ -101,7 +101,7 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
+
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -109,7 +109,7 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(emailData);
+
     const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
@@ -149,11 +149,12 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id, email: sessionEmail, username: sessionUsername },
+      user: { _id, email: sessionEmail, username: sessionUsername, avatarUrl },
     },
     body: { name, email, username, location },
+    file,
   } = req;
-
+  // console.log(file);
   if (sessionEmail !== email || sessionUsername !== username) {
     const exists = await User.exists({ $or: [{ username }, { email }] });
     if (exists) {
@@ -165,6 +166,7 @@ export const postEdit = async (req, res) => {
       const updatedUser = await User.findByIdAndUpdate(
         _id,
         {
+          avatarUrl: file ? file.path : avatarUrl,
           name: name,
           email: email,
           username: username,
@@ -184,6 +186,7 @@ export const postEdit = async (req, res) => {
       const updatedUser = await User.findByIdAndUpdate(
         _id,
         {
+          avatarUrl: file ? file.path : avatarUrl,
           name: name,
           email: email,
           username: username,
