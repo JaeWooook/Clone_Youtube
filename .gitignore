@@ -120,3 +120,4 @@ package-lock.json
 babel.config.json
 
 /uploads
+/assets
