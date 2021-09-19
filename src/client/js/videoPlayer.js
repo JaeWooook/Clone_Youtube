@@ -8,7 +8,10 @@ const totalTime = document.getElementById("totalTime");
 const timeLine = document.getElementById("timeLine");
 const fullScreenBtn = document.getElementById("fullScreen");
 const videoContainer = document.getElementById("videoContainer");
+const videoControls = document.getElementById("videoControls");
 
+let controlsMovementTimeout = null;
+let controlsTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
@@ -45,7 +48,7 @@ const handleVolumeChange = (e) => {
 };
 
 const formatTime = (seconds) =>
-  new Date(seconds * 1000).toISOString().substr(11, 8); //시간초를 이용해서 포맷을 만들어준다.
+  new Date(seconds * 1000).toISOString().substr(11, 8);
 
 const handleLoadedMetadata = () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
@@ -61,27 +64,50 @@ const handleTimeLineChange = (e) => {
   const {
     target: { value },
   } = e;
-  video.currentTime = value; //video.currentTime은 getter or setter를 동시에 해줄 수 있기 때문에 변경되는 value값을 그대로 넣어준다.
+  video.currentTime = value;
 };
 
 const hanldeFullScreen = () => {
   const fullscreen = document.fullscreenElement;
   if (fullscreen) {
-    //fullscreen이 아니면 null이다.
-    //exit full screen은 document에서 불러진다.
     document.exitFullscreen();
     fullScreenBtn.innerText = "Enter Full Screen";
   } else {
-    videoContainer.requestFullscreen(); //video api를 이용해서 fullscreen으로 만들어준다. requestfullscreen은 element에서 불러진다.
-    //videoContainer를 풀스크린으로해주면 컨트롤버튼까지 풀스크린으로된다.
+    videoContainer.requestFullscreen();
     fullScreenBtn.innerText = "Exit Full Screen";
   }
+};
+//마우스의 움직임이 멈추면 사라지게 하기위해 마우스를 가져다댔을때부터 timeout을 작동시킨다.
+const hideControls = () => videoControls.classList.remove("showing");
+
+const handleMouseMove = () => {
+  if (controlsTimeout) {
+    //controlsTimeout이 null이 아니면 clear로 timeout초기화해준다.
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  if (controlsMovementTimeout) {
+    //우리가 움직임을 멈춘다면 이것은 실행되지 않는다. 마우스가 지속적으로 움직이면 handleMouseMove함수가 새로 실행되면서 이전의 timeout이죽는다.
+    clearTimeout(controlsMovementTimeout); //예전의 timeout을 죽이고 새로운 timeout을 만들어준다.
+    controlsMovementTimeout = null;
+  }
+  videoControls.classList.add("showing"); //mouse event에 따라 controls을 보이게한다. 하기위해 class를 추가
+  controlsMovementTimeout = setTimeout(hideControls, 3000); //마우스를 움직일때마다 timeout을 만들어준다.
+};
+
+const handleMouseLeave = () => {
+  controlsTimeout = setTimeout(hideControls, 3000); //mouse 가 사라지면 class를 삭제
+  //3초 정도 뒤에 사라지게 하기위해 setTimeout을 이용한다.
+  //하지만 다시 마우스가 돌아왔을때는 timeout을 중지시켜야한다.
+  //timeout에는 id가 존재하는데 clearTimeout(id) 를 넣으면 실행중인 timeout을 중지시켜준다.
 };
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadedmetadata", handleLoadedMetadata);
-video.addEventListener("timeupdate", handleTimeUpdate); //비디오의 시간이 변할때마다 업데이트된다.
-timeLine.addEventListener("input", handleTimeLineChange); //input의 변화하는 value값을 확인한다.
+video.addEventListener("timeupdate", handleTimeUpdate);
+timeLine.addEventListener("input", handleTimeLineChange);
 fullScreenBtn.addEventListener("click", hanldeFullScreen);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
