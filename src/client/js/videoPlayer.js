@@ -115,6 +115,14 @@ const handlePressSpace = (e) => {
   }
 };
 
+const handleEnded = () => {
+  //video가 멈출때 보내준다.
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -124,6 +132,7 @@ video.addEventListener("timeupdate", handleTimeUpdate);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 video.addEventListener("click", handleVideoPlayClick);
+video.addEventListener("ended", handleEnded);
 timeLine.addEventListener("input", handleTimeLineChange);
 fullScreenBtn.addEventListener("click", hanldeFullScreen);
 window.addEventListener("keydown", handlePressSpace);
