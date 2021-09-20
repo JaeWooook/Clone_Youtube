@@ -1,8 +1,9 @@
 import express from "express";
 import morgan from "morgan";
-import helmet from "helmet";
-import cookieParser from "cookie-parser";
+// import helmet from "helmet";
+// import cookieParser from "cookie-parser";
 import session from "express-session";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 // import routes from "./routes";
 import userRouter from "./routers/userRouter";
@@ -29,7 +30,7 @@ app.use(
     }),
   })
 );
-
+app.use(flash()); //이 flash가 session에 연결해서 사용자에게 메시지를 남긴다.
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads/"));
 app.use(

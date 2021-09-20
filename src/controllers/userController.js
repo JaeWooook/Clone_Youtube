@@ -156,9 +156,9 @@ export const postEdit = async (req, res) => {
     file,
   } = req;
   // console.log(file);
-  if (sessionEmail !== email || sessionUsername !== username) {
+  if (sessionEmail !== email && sessionUsername !== username) {
     const exists = await User.exists({ $or: [{ username }, { email }] });
-    if (exists) {
+    if (exists && exists._id !== _id) {
       return res.status(400).render("edit-profile", {
         errorMessage: "This username/email is already taken",
       });
@@ -207,6 +207,7 @@ export const postEdit = async (req, res) => {
 
 export const getChangePassword = (req, res) => {
   if (req.session.user.socialOnly === true) {
+    req.flash("error", "Can`t change password");
     return res.redirect("/");
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
@@ -236,6 +237,7 @@ export const postChangePassword = async (req, res) => {
   const user = await User.findById(_id);
   user.password = newPassword;
   await user.save();
+  req.flash("info", "Password Updated");
   req.session.user.password = user.password;
   return res.redirect("/users/logout");
 };
