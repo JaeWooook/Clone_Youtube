@@ -12,7 +12,7 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id).populate("owner").populate("comments");
-  console.log(video);
+  // console.log(video);
   if (video === null) {
     return res.status(404).render("404", { pageTitle: "Video not found." });
   }
@@ -162,5 +162,33 @@ export const createComment = async (req, res) => {
   });
   video.comments.push(comment._id); //비디오 쪽에 comments를 업데이트해주는 것이다.
   video.save();
-  return res.sendStatus(201); //create상태이다. 201이
+  return res.status(201).json({ newCommentId: comment._id }); //create상태이다. 201이
+  //프론트한테 메시지를 되돌려 보내는 것이다.
+};
+
+export const deleteComment = async (req, res) => {
+  const {
+    session: { user },
+    body: { videoId, commentId },
+  } = req;
+  const video = await Video.findById(videoId);
+  const current_user = await User.findById(user._id);
+  const comment = await Comment.findById(commentId);
+
+  if (String(comment.owner) !== String(current_user._id)) {
+    return res.status(403).redirect("/");
+  }
+  if (video === null) {
+    return res.status(404).render("404", { pageTitle: "Video not found." });
+  }
+  if (current_user === null) {
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  if (comment === null) {
+    return res.status(404).render("404", { pageTitle: "Comment not found." });
+  }
+  await Comment.findByIdAndDelete(comment._id);
+  video.comments.splice(video.comments.indexOf(comment._id), 1);
+  video.save();
+  return res.sendStatus(200);
 };

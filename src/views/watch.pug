@@ -28,18 +28,27 @@ block content
             a(href=`${video.id}/edit`) Edit Video &rarr;
             br
             a(href=`${video.id}/delete`) Delete Video &rarr;
-
-    if loggedIn
-        div.video__add-comments
-            form.video__comment-form#commentForm
-                textarea(cols="30", rows="10", placeholder="Write a nice comment...")
-                button Add Comment
-    div.video__comments
-        ul
-            each comment in video.comments.reverse()
-                li.video__comment
-                    i.fas.fa-comment
-                    span  #{comment.text}
+    div.video__commentsTotal
+        if loggedIn
+            div.video__add-comments
+                form.video__comment-form#commentForm
+                    if loggedInUser.avatarUrl === undefined || loggedInUser.avatarUrl === ""
+                        span 😀
+                    else
+                        if loggedInUser.avatarUrl.includes("github")
+                            img.comment__avatar(src=loggedInUser.avatarUrl)
+                        else
+                            img.comment__avatar(src="/"+loggedInUser.avatarUrl)
+                    input#video__comment-reply(type="text", placeholder="Write a nice comment...")
+                    button
+                        i.far.fa-paper-plane.fa-2x
+        div.video__comments
+            ul
+                each comment in video.comments.reverse()
+                    li.video__comment(data-id=comment.id)
+                        i.fas.fa-comment #{comment.text}
+                        if String(comment.owner._id) === String(loggedInUser._id)
+                            span.deleteBtn  ❌
 
 block scripts
     script(src="/static/js/videoPlayer.js")
