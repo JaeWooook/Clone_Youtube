@@ -11,8 +11,6 @@ module.exports = {
     commentSection: BASE_JS + "commentSection.js",
   },
   devtool: "cheap-module-source-map",
-  watch: true,
-  mode: "development",
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/styles.css",
