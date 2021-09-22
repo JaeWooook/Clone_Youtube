@@ -121,3 +121,4 @@ babel.config.json
 
 /uploads
 /assets
+/build

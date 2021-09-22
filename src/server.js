@@ -14,10 +14,8 @@ import apiRouter from "./routers/apiRouter";
 
 const app = express();
 
-// app.use(helmet());
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
-// app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ extended: true })); //이렇게 해주면 string을 받앗을때 다시 js의 것으로 바꿔준다.
