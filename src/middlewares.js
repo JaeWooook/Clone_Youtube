@@ -1,10 +1,27 @@
 import multer from "multer";
+import multerS3 from "multer-s3";
+import aws from "aws-sdk";
+
+const s3 = new aws.S3({
+  credentials: {
+    accessKeyId: process.env.AWS_ID,
+    secretAccessKey: process.env.AWS_SECRET,
+  },
+});
+
+const multerUploader = multerS3({
+  s3: s3,
+  bucket: "yourtube",
+  acl: "public-read",
+});
+
+export const isLocal = process.env.NODE_ENV === "development";
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "YourTube";
   res.locals.loggedInUser = req.session.user || {};
-
+  res.locals.isLocal = isLocal;
   next();
 };
 
@@ -31,6 +48,7 @@ export const avatarUploadMiddleware = multer({
   limits: {
     fileSize: 3000000,
   },
+  storage: isLocal ? undefined : multerUploader,
 });
 
 export const videoUploadMiddleware = multer({
@@ -38,4 +56,5 @@ export const videoUploadMiddleware = multer({
   limits: {
     fileSize: 100000000,
   },
+  storage: isLocal ? undefined : multerUploader,
 });

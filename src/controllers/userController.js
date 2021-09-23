@@ -2,6 +2,7 @@ import User from "../models/User";
 import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
+import { isLocal } from "../middlewares";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -155,7 +156,7 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location },
     file,
   } = req;
-  // console.log(file);
+  console.log(file);
   if (sessionEmail !== email && sessionUsername !== username) {
     const exists = await User.exists({ $or: [{ username }, { email }] });
     if (exists && exists._id !== _id) {
@@ -167,7 +168,11 @@ export const postEdit = async (req, res) => {
       const updatedUser = await User.findByIdAndUpdate(
         _id,
         {
-          avatarUrl: file ? file.path : avatarUrl,
+          avatarUrl: file
+            ? isLocal
+              ? "/" + file.path
+              : file.location
+            : avatarUrl,
           name: name,
           email: email,
           username: username,
