@@ -7,7 +7,7 @@ import "./models/User";
 import "./models/Comment";
 
 const PORT = process.env.PORT || 4000;
-//test
+
 const handleListening = () =>
   console.log(` ✅ Listening on: http://localhost:${PORT}`);
 
