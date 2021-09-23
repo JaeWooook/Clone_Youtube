@@ -84,7 +84,7 @@ export const postUpload = async (req, res) => {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: isLocal ? "/" + video[0].path : video[0].location,
+      fileUrl: isLocal ? video[0].path : video[0].location,
       thumbUrl: isLocal
         ? "/" + thumb[0].destination + thumb[0].filename
         : thumb[0].location,
