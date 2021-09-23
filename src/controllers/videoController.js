@@ -1,7 +1,7 @@
 import Video from "../models/Video";
 import Comment from "../models/Comment";
 import User from "../models/User";
-import { isLocal } from "../middlewares";
+// import { isLocal } from "../middlewares";
 
 export const home = async (req, res) => {
   const videos = await Video.find({})
@@ -79,15 +79,15 @@ export const postUpload = async (req, res) => {
   // console.log(video, thumb, req.files);
   const { video, thumb } = req.files;
   const { title, description, hashtags } = req.body;
-
+  const isHeroku = process.env.NODE_ENV === "production";
   try {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: isLocal ? video[0].path : video[0].location,
-      thumbUrl: isLocal
-        ? "/" + thumb[0].destination + thumb[0].filename
-        : thumb[0].location,
+      fileUrl: isHeroku ? video[0].location : video[0].path,
+      thumbUrl: isHeroku
+        ? thumb[0].location
+        : "/" + thumb[0].destination + thumb[0].filename,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
