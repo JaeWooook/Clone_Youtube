@@ -13,15 +13,15 @@ header
                     a(href="/users/edit") Edit Profile
                 li
                     a(href="/users/logout") Log Out
-                //- li
-                //-     a(href=`/users/${loggedInUser._id}`)
-                //-         if loggedInUser.avatarUrl === "" || loggedInUser.avatarUrl === undefined
-                //-             span 😀
-                //-         else
-                //-             if loggedInUser.avatarUrl.includes("github")
-                //-                 img.header__avatar(src=loggedInUser.avatarUrl)
-                //-             else
-                //-                 img.header__avatar(src="/"+loggedInUser.avatarUrl)
+                li
+                    a(href=`/users/${loggedInUser._id}`)
+                        if loggedInUser.avatarUrl === "" || loggedInUser.avatarUrl === undefined
+                            span 😀
+                        else
+                            if loggedInUser.avatarUrl.includes("github")
+                                img.header__avatar(src=loggedInUser.avatarUrl)
+                            else
+                                img.header__avatar(src="/"+loggedInUser.avatarUrl)
             else
                 li 
                     a(href="/login") Login
